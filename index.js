@@ -1,8 +1,9 @@
+const Nimiq = require("./nimiq/lib/node.js");
+const Buffer = require("buffer").Buffer;
+const MnemonicPhrase = require("./phrases.js");
+
 async function main() {
-  const Nimiq = require("./nimiq/lib/node.js");
   Nimiq.GenesisConfig.test(); //do this on testnet
-  const Buffer = require("buffer").Buffer;
-  const MnemonicPhrase = require("./phrases.js");
   const privateKey = Buffer.from(MnemonicPhrase.mnemonicToKey(require("./privateKey.js")), "hex");
 
   const key = new Nimiq.PrivateKey(privateKey);

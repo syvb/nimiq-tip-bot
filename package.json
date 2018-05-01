@@ -1,0 +1,24 @@
+{
+  "name": "free-nim-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "discord.io": "^2.5.3",
+    "winston": "^2.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Smittyvb/free-nim-bot.git"
+  },
+  "author": "",
+  "license": "UNLICENCED",
+  "bugs": {
+    "url": "https://github.com/Smittyvb/free-nim-bot/issues"
+  },
+  "homepage": "https://github.com/Smittyvb/free-nim-bot#readme"
+}
