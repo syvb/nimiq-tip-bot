@@ -63,9 +63,12 @@ typings/
 # Compiled Nimiq code
 nimiq
 
-# Private key
+# Nimiq private key
 privateKey.js
 
 # Nimiq chain data
 *-*-consensus
 peer-key
+
+# Discord secret key
+discordAuth.json
