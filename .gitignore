@@ -62,3 +62,6 @@ typings/
 
 # Compiled Nimiq code
 nimiq
+
+# Private key
+privateKey.js
