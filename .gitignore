@@ -65,3 +65,7 @@ nimiq
 
 # Private key
 privateKey.js
+
+# Nimiq chain data
+*-*-consensus
+peer-key
