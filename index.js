@@ -7,6 +7,8 @@ const AddressFinder = require("./getAddress.js");
 const DiscordAuth = require("./discordAuth.json");
 const Discord = require("discord.io");
 
+var rateLimitedIDs = {};
+
 async function main() {
   logger.remove(logger.transports.Console);
   logger.add(logger.transports.Console, {
@@ -24,16 +26,14 @@ async function main() {
 
   logger.verbose("Loaded private key.");
 
-  const consensus = await Nimiq.Consensus.light();
+  const consensus = await Nimiq.Consensus.nano();
   consensus.network.connect();
   async function sendTo(address) {
     logger.debug("Sent NIM to " + address)
-    var transaction = wallet.createTransaction(Nimiq.Address.fromUserFriendlyAddress(address), 1337, 3, consensus.blockchain.head.height);
-    await consensus.mempool.pushTransaction(transaction);
+    var transaction = wallet.createTransaction(address, 2000, 140, consensus.blockchain.head.height);
+    await consensus.relayTransaction(transaction);
   }
   consensus.on("established", async () => {
-    // verify that it worked
-    await sendTo("NQ92 589S 4CN6 U0FX NQRV NHQP TQNV CF1U BVHU");
     logger.verbose("Consensus established");
     const bot = new Discord.Client({
       token: DiscordAuth.token,
@@ -42,13 +42,29 @@ async function main() {
     bot.on("ready", function (evt) {
       logger.info("Logged in to Discord as: " + bot.username + " - (" + bot.id + ")");
     });
-    bot.on("message", function (user, userID, channelID, message, evt) {
+    bot.on("message", async function (user, userID, channelID, message, evt) {
       logger.silly("Got message, " + message);
       var address = AddressFinder(message);
+      if (userID !== "384847091924729856") {
+        return;
+      }
+      if (message.indexOf("!tip") === -1) {
+        return;
+      }
       if (address) {
         logger.debug("Parsed address, " + address);
         try {
-          sendTo(address);
+          const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address);
+          if (!rateLimitedIDs[userID]) {
+            rateLimitedIDs[userID] = 1;
+          } else {
+            rateLimitedIDs[userID]++;
+          }
+          if (rateLimitedIDs[userID] > 3) {
+            //return;
+          }
+          await sendTo(hexAddess);
+          bot.sendMessage({ to: channelID, message: "<@" + userID + ">, you have received 0.1 testnet NIM to that address."});
         } catch (e) {}
       }
     });
@@ -57,3 +73,7 @@ async function main() {
   Nimiq.Log.instance.level = 4;
 }
 main();
+setInterval(function () {
+  logger.verbose("Reset rate-limted IDs");
+  rateLimitedIDs = {};
+}, 900000); // 14 minutes
