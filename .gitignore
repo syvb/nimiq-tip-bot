@@ -72,3 +72,6 @@ peer-key
 
 # Discord secret key
 discordAuth.json
+
+# Database
+db.json
