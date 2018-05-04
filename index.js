@@ -36,12 +36,12 @@ async function main() {
 
   logger.verbose("Loaded private key.");
 
-  const consensus = await Nimiq.Consensus.nano();
+  const consensus = await Nimiq.Consensus.light();
   consensus.network.connect();
   async function sendTo(address) {
     logger.debug("Sent NIM to " + address)
     var transaction = wallet.createTransaction(address, 2000, 140, consensus.blockchain.head.height);
-    await consensus.relayTransaction(transaction);
+    await consensus.mempool.pushTransaction(transaction);
   }
   consensus.on("established", async () => {
     logger.verbose("Consensus established");
