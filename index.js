@@ -5,7 +5,7 @@ const Buffer = require("buffer").Buffer;
 const MnemonicPhrase = require("./phrases.js");
 const AddressFinder = require("./getAddress.js");
 const DiscordAuth = require("./discordAuth.json");
-const Discord = require("discord.io");
+const Discord = require("discord.js");
 
 var rateLimitedIDs = {};
 
@@ -26,51 +26,53 @@ async function main() {
 
   logger.verbose("Loaded private key.");
 
-  const consensus = await Nimiq.Consensus.nano();
+  const consensus = await Nimiq.Consensus.light();
   consensus.network.connect();
   async function sendTo(address) {
     logger.debug("Sent NIM to " + address)
     var transaction = wallet.createTransaction(address, 2000, 140, consensus.blockchain.head.height);
-    await consensus.relayTransaction(transaction);
+    await consensus.mempool.pushTransaction(transaction);
   }
   consensus.on("established", async () => {
     logger.verbose("Consensus established");
-    const bot = new Discord.Client({
-      token: DiscordAuth.token,
-      autorun: true
-    });
+    const bot = new Discord.Client();
     bot.on("ready", function (evt) {
+      console.log(42);
       logger.info("Logged in to Discord as: " + bot.username + " - (" + bot.id + ")");
     });
-    bot.on("message", async function (user, userID, channelID, message, evt) {
-      logger.silly("Got message, " + message);
-      var address = AddressFinder(message);
-      if (userID !== "384847091924729856") {
+    bot.on("message", async function (msg) {
+      logger.silly("Got message, " + msg.content);
+      var address = AddressFinder(msg.content);
+      if (msg.author.id !== "384847091924729856") {
+        console.log("Wrong id, ", msg.author.id)
         return;
       }
-      if (message.indexOf("!tip") === -1) {
+
+      if (msg.content.indexOf("!tip") === -1) {
         return;
       }
       if (address) {
         logger.debug("Parsed address, " + address);
         try {
           const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address);
-          if (!rateLimitedIDs[userID]) {
-            rateLimitedIDs[userID] = 1;
+          if (!rateLimitedIDs[msg.author.id]) {
+            rateLimitedIDs[msg.author.id] = 1;
           } else {
-            rateLimitedIDs[userID]++;
+            rateLimitedIDs[msg.author.id]++;
           }
-          if (rateLimitedIDs[userID] > 3) {
+          if (rateLimitedIDs[msg.author.id] > 3) {
             //return;
           }
           await sendTo(hexAddess);
-          bot.sendMessage({ to: channelID, message: "<@" + userID + ">, you have received 0.1 testnet NIM to that address."});
-        } catch (e) {}
+          msg.reply("you have sent 0.02 NIM to that address.");
+        } catch (e) {throw e;}
       }
     });
+    bot.on("error", function (a) {console.log("a" + a);})
+    bot.login(DiscordAuth.token);
     logger.info("Discord bot configured.");
   });
-  Nimiq.Log.instance.level = 4;
+  Nimiq.Log.instance.level = 5;
 }
 main();
 setInterval(function () {
