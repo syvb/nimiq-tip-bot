@@ -75,8 +75,8 @@ async function main() {
       }
       if (msg.content.indexOf("!deposit") === 0) {
         var keyPair = Nimiq.KeyPair.generate();
-        var walletAddress = Nimiq.Address.fromHash(key.publicKey.hash()).toUserFriendlyAddress();
-        db.keyPairs[keyPair.publicKey.hash()] = {
+        var walletAddress = Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress();
+        db.keyPairs[keyPair.publicKey.toHex()] = {
           privateKey: Nimiq.KeyPair.generate().privateKey.toHex(),
           user: msg.author.id,
           used: false
