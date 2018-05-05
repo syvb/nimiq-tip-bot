@@ -52,7 +52,8 @@ async function main() {
     });
     bot.on("message", async function (msg) {
       logger.silly("Got message, " + msg.content);
-      var address = AddressFinder(msg.content);
+      var address = AddressFinder(msg.content).toUpperCase();
+      msg = msg.toLowerCase();
       if (msg.content.indexOf("!balance") === 0) {
         if (db.userBalances[msg.author.id]) {
           return msg.reply("Your balance is " + db.userBalances[msg.author.id] / 100000 + " NIM.");
