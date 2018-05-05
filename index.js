@@ -52,8 +52,8 @@ async function main() {
     });
     bot.on("message", async function (msg) {
       logger.silly("Got message, " + msg.content);
-      var address = AddressFinder(msg.content).toUpperCase();
-      msg = msg.toLowerCase();
+      var address = AddressFinder(msg.content);
+      msg.content = msg.content.toLowerCase();
       if (msg.content.indexOf("!balance") === 0) {
         if (db.userBalances[msg.author.id]) {
           return msg.reply("Your balance is " + db.userBalances[msg.author.id] / 100000 + " NIM.");
@@ -66,7 +66,7 @@ async function main() {
         if (address) {
           logger.debug("Parsed address, " + address);
           try {
-            const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address);
+            const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
             await sendTo(hexAddess, db.userBalances[msg.author.id]);
             db.userBalances[msg.author.id] = 0;
             saveDB();
@@ -88,7 +88,7 @@ async function main() {
       if (address) {
         logger.debug("Parsed address, " + address);
         try {
-          const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address);
+          const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
           if (!rateLimitedIDs[msg.author.id]) {
             rateLimitedIDs[msg.author.id] = 1;
           } else {
