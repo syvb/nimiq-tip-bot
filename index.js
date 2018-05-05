@@ -1,6 +1,6 @@
 const logger = require("winston");
 logger.info("Starting...");
-const Nimiq = require("./nimiq/lib/node.js");
+const Nimiq = require("/usr/share/nimiq/app/lib/node.js");
 const Buffer = require("buffer").Buffer;
 const MnemonicPhrase = require("./phrases.js");
 const AddressFinder = require("./getAddress.js");
@@ -38,9 +38,9 @@ async function main() {
 
   const consensus = await Nimiq.Consensus.light();
   consensus.network.connect();
-  async function sendTo(address) {
+  async function sendTo(address, amount) {
     logger.debug("Sent NIM to " + address)
-    var transaction = wallet.createTransaction(address, 2000, 140, consensus.blockchain.head.height);
+    var transaction = wallet.createTransaction(address, amount ? amount : 20000, 140, consensus.blockchain.head.height);
     await consensus.mempool.pushTransaction(transaction);
   }
   consensus.on("established", async () => {
@@ -53,6 +53,27 @@ async function main() {
     bot.on("message", async function (msg) {
       logger.silly("Got message, " + msg.content);
       var address = AddressFinder(msg.content);
+      if (msg.content.indexOf("!balance") === 0) {
+        if (db.userBalances[msg.author.id]) {
+          return msg.reply("Your balance is " + db.userBalances[msg.author.id] / 100000 + " NIM.");
+        } else {
+          return msg.reply("You have no balance.");
+        }
+        return;
+      }
+      if (msg.content.indexOf("!withdraw") === 0) {
+        if (address) {
+          logger.debug("Parsed address, " + address);
+          try {
+            const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address);
+            await sendTo(hexAddess, db.userBalances[msg.author.id]);
+            db.userBalances[msg.author.id] = 0;
+            saveDB();
+            msg.reply("You have sent your balance to that address.");
+          } catch (e) {console.log(e);}
+        }
+        return;
+      }
       if (msg.content.indexOf("!tip") !== 0) {
         return;
       }
@@ -60,7 +81,7 @@ async function main() {
         console.log("On blacklist, ", msg.author.id);
         return;
       }
-      if (!db.userBalances[msg.author.id] || (db.userBalances[msg.author.id] <= 2140)) {
+      if (!db.userBalances[msg.author.id] || (db.userBalances[msg.author.id] <= 20000)) {
         return msg.reply("Sorry, you don't have enough balance with this tip-bot, to tip.");
       }
       if (address) {
@@ -76,17 +97,26 @@ async function main() {
             //return;
           }
           await sendTo(hexAddess);
-          db.userBalances[msg.author.id] -= 2140;
+          db.userBalances[msg.author.id] -= 20000;
           saveDB();
-          msg.reply("You have sent 0.02 NIM to that address.");
-        } catch (e) {throw e;}
+          msg.reply("You have sent 0.2 NIM to that address.");
+        } catch (e) {}
+      } else {
+        try {
+          var sendToUser = msg.content.match(/<@!?(\d*)>/)[1];
+          db.userBalances[msg.author.id] -= 20000;
+          if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
+          db.userBalances[sendToUser] += 20000;
+          msg.reply("Sent. <@" + sendToUser + "> has received a tip of 0.2 NIM.");
+          saveDB();
+        } catch (e) {}
       }
     });
     bot.on("error", function (a) {console.log("a" + a);})
     bot.login(DiscordAuth.token);
     logger.info("Discord bot configured.");
   });
-  Nimiq.Log.instance.level = 5;
+  Nimiq.Log.instance.level = 4;
 }
 main();
 setInterval(function () {
