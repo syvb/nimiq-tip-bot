@@ -130,11 +130,11 @@ async function main() {
         try {
           amountToSend = parseInt(msg.content.match(/ \d*$/)[0], 10);
         }
+        catch (e) {}
         if (amountToSend === 0) {
           msg.reply("You cannot send 0 NIM.");
           return;
         }
-        catch (e) {}
         try {
           const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
           await sendTo(hexAddess);
