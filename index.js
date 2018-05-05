@@ -24,6 +24,7 @@ async function main() {
       if (cb) cb();
     });
   }
+  if (!db.keyPairs) db.keyPairs = {};
 
   Nimiq.GenesisConfig.main();
   const privateKey = Buffer.from(MnemonicPhrase.mnemonicToKey(require("./privateKey.js")), "hex");
@@ -70,6 +71,41 @@ async function main() {
             msg.reply("You have sent your balance to that address.");
           } catch (e) {console.log(e);}
         }
+        return;
+      }
+      if (msg.content.indexOf("!deposit") === 0) {
+        var keyPair = Nimiq.KeyPair.generate();
+        var walletAddress = Nimiq.Address.fromHash(key.publicKey.hash()).toUserFriendlyAddress();
+        db.keyPairs[keyPair.publicKey.hash()] = {
+          privateKey: Nimiq.KeyPair.generate().privateKey.toHex(),
+          user: msg.author.id,
+          used: false
+        };
+        saveDB();
+        msg.reply(
+          `If you wish to deposit to this tipbot, you may do so. However, remember that this is a tipbot, **not** a wallet. It is recommended that you do not store a large amount of NIM with a tipbot. \n` +
+          "Please send your NIM to " + Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress() + ". \n Then, run \"!verify " + keyPair.publicKey.hash() + "\"");
+        return;
+      }
+      if (msg.content.indexOf("!verify") === 0) {
+        msg.content = msg.content.trim();
+        var publicKey = msg.content.split("!verify")[1].trim();
+        if (!db.keyPairs[publicKey]) {
+          return msg.reply("Sorry, it doesn't look like that address has been used.");
+        }
+        var walletInfo = db.keyPairs[publicKey];
+        if (walletInfo.user !== msg.author.id) {
+          return msg.reply("Sorry, that address cannot be used by you.");
+        }
+        if (walletInfo.used) {
+          return msg.reply("Sorry, addresses can only be used once. However, you can message support (<@384847091924729856>), to have this resolved.");
+        }
+        var balance = 42;
+        db.userBalances[walletInfo.user] += balance;
+        db.keyPairs[publicKey].used = true;
+        await sendTo(Nimiq.Address.fromUserFriendlyAddress("NQ85 TEST VY0L DR6U KDXA 6EAV 1EJG ENJ9 NCGP"), balance);
+        msg.reply("It worked! " + (balance / 100000) + " NIM has been credited to your account. **DO NOT** reuse this address. Instead, request a new one with !deposit, if you want to deposit more.");
+        saveDB();
         return;
       }
       if (msg.content.indexOf("!tip") !== 0) {
