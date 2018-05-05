@@ -77,14 +77,14 @@ async function main() {
         var keyPair = Nimiq.KeyPair.generate();
         var walletAddress = Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress();
         db.keyPairs[keyPair.publicKey.toHex()] = {
-          privateKey: Nimiq.KeyPair.generate().privateKey.toHex(),
+          privateKey: keyPair.privateKey.toHex(),
           user: msg.author.id,
           used: false
         };
         saveDB();
         msg.reply(
           `If you wish to deposit to this tipbot, you may do so. However, remember that this is a tipbot, **not** a wallet. It is recommended that you do not store a large amount of NIM with a tipbot. \n` +
-          "Please send your NIM to " + Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress() + ". \n Then, run \"!verify " + keyPair.publicKey.hash() + "\"");
+          "Please send your NIM to " + Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress() + ". \n Then, run \"!verify " + keyPair.publicKey.toHex() + "\"");
         return;
       }
       if (msg.content.indexOf("!verify") === 0) {
@@ -103,7 +103,9 @@ async function main() {
         var userKey = new Nimiq.PrivateKey(Buffer.from(walletInfo.privateKey, "hex"));
         var userKeyPair = Nimiq.KeyPair.derive(userKey);
         var userWallet = new Nimiq.Wallet(userKeyPair);
-        var balance = await consensus.blockchain.accounts.get(userKeyPair.publicKey).balance;
+//console.log(Nimiq.Address.fromHash(userKeyPair.publicKey).toUserFriendlyAddress())
+        var balance = (await consensus.blockchain.accounts.get(userWallet.address)).balance;
+        console.log(balance + "!");
         if (balance === 0) {
           return msg.reply("No NIM was sent to that address.");
         }
