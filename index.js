@@ -103,7 +103,7 @@ async function main() {
         var userKey = new Nimiq.PrivateKey(Buffer.from(walletInfo.privateKey, "hex"));
         var userKeyPair = Nimiq.KeyPair.derive(userKey);
         var userWallet = new Nimiq.Wallet(userKeyPair);
-        var balance = consensus.blockchain.accounts.get(userKeyPair.publicKey).balance;
+        var balance = await consensus.blockchain.accounts.get(userKeyPair.publicKey).balance;
         if (balance === 0) {
           return msg.reply("No NIM was sent to that address.");
         }
@@ -124,17 +124,28 @@ async function main() {
       if (!db.userBalances[msg.author.id] || (db.userBalances[msg.author.id] <= 20000)) {
         return msg.reply("Sorry, you don't have enough balance with this tip-bot, to tip.");
       }
-      if (address) {
-        logger.debug("Parsed address, " + address);
         var amountToSend = 20000;
         try {
-          amountToSend = parseInt(msg.content.match(/ \d*$/)[0], 10);
+          amountToSend = msg.content.match(/(\d|\.)*$/)[0].trim();
         }
         catch (e) {}
+        var dots = msg.content.match(/\./);
+console.log(amountToSend);
+        if (dots && (dots.length > 2)) {
+          return msg.reply("I don't understand that number.");
+        }
+        if (amountToSend === "") {
+          amountToSend = 20000;
+        } else {
+          amountToSend = parseFloat(amountToSend, 10) * 100000;
+        }
         if (amountToSend === 0) {
           msg.reply("You cannot send 0 NIM.");
           return;
         }
+      if (address) {
+        logger.debug("Parsed address, " + address);
+
         try {
           const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
           await sendTo(hexAddess);
@@ -153,6 +164,7 @@ async function main() {
         } catch (e) {}
       }
     });
+    bot.on("error", function (a) {logger.error("Discord error, ", a.toString());});
     bot.login(DiscordAuth.token);
     logger.info("Discord bot configured.");
   });
