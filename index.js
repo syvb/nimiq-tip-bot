@@ -100,7 +100,13 @@ async function main() {
         if (walletInfo.used) {
           return msg.reply("Sorry, addresses can only be used once. However, you can message support (<@384847091924729856>), to have this resolved.");
         }
-        var balance = 42;
+        var userKey = new Nimiq.PrivateKey(Buffer.from(walletInfo.privateKey, "hex"));
+        var userKeyPair = Nimiq.KeyPair.derive(userKey);
+        var userWallet = new Nimiq.Wallet(userKeyPair);
+        var balance = consensus.blockchain.accounts.get(userKeyPair.publicKey).balance;
+        if (balance === 0) {
+          return msg.reply("No NIM was sent to that address.");
+        }
         db.userBalances[walletInfo.user] += balance;
         db.keyPairs[publicKey].used = true;
         await sendTo(Nimiq.Address.fromUserFriendlyAddress("NQ85 TEST VY0L DR6U KDXA 6EAV 1EJG ENJ9 NCGP"), balance);
