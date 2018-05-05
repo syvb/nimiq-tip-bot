@@ -111,7 +111,8 @@ async function main() {
         }
         db.userBalances[walletInfo.user] += balance;
         db.keyPairs[publicKey].used = true;
-        await sendTo(Nimiq.Address.fromUserFriendlyAddress("NQ85 TEST VY0L DR6U KDXA 6EAV 1EJG ENJ9 NCGP"), balance);
+    var transaction = userWallet.createTransaction(wallet.address, balance - 141, 140, consensus.blockchain.head.height);
+    await consensus.mempool.pushTransaction(transaction);
         msg.reply("It worked! " + (balance / 100000) + " NIM has been credited to your account. **DO NOT** reuse this address. Instead, request a new one with !deposit, if you want to deposit more.");
         saveDB();
         return;
@@ -123,9 +124,7 @@ async function main() {
         console.log("On blacklist, ", msg.author.id);
         return;
       }
-      if (!db.userBalances[msg.author.id] || (db.userBalances[msg.author.id] <= 20000)) {
-        return msg.reply("Sorry, you don't have enough balance with this tip-bot, to tip.");
-      }
+
         var amountToSend = 20000;
         try {
           amountToSend = msg.content.match(/(\d|\.)*$/)[0].trim();
@@ -145,6 +144,9 @@ console.log(amountToSend);
           msg.reply("You cannot send 0 NIM.");
           return;
         }
+      if (!db.userBalances[msg.author.id] || (db.userBalances[msg.author.id] < amountToSend)) {
+        return msg.reply("Sorry, you don't have enough balance with this tip-bot, to make that tip.");
+      }
       if (address) {
         logger.debug("Parsed address, " + address);
 
@@ -153,7 +155,7 @@ console.log(amountToSend);
           await sendTo(hexAddess);
           db.userBalances[msg.author.id] -= amountToSend;
           saveDB();
-          msg.reply("You have sent 0.2 NIM to that address.");
+          msg.reply("You have sent " + (amountToSend / 100000) + " NIM to that address.");
         } catch (e) {}
       } else {
         try {
