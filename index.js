@@ -87,28 +87,25 @@ async function main() {
       }
       if (address) {
         logger.debug("Parsed address, " + address);
+        var amountToSend = 20000;
+        try {
+          amountToSend = parseInt(msg.content.match(/\d*$/)[0], 10);
+        }
+        catch (e) {}
         try {
           const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
-          if (!rateLimitedIDs[msg.author.id]) {
-            rateLimitedIDs[msg.author.id] = 1;
-          } else {
-            rateLimitedIDs[msg.author.id]++;
-          }
-          if (rateLimitedIDs[msg.author.id] > 3) {
-            //return;
-          }
           await sendTo(hexAddess);
-          db.userBalances[msg.author.id] -= 20000;
+          db.userBalances[msg.author.id] -= amountToSend;
           saveDB();
           msg.reply("You have sent 0.2 NIM to that address.");
         } catch (e) {}
       } else {
         try {
           var sendToUser = msg.content.match(/<@!?(\d*)>/)[1];
-          db.userBalances[msg.author.id] -= 20000;
+          db.userBalances[msg.author.id] -= amountToSend;
           if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
-          db.userBalances[sendToUser] += 20000;
-          msg.reply("Sent. <@" + sendToUser + "> has received a tip of 0.2 NIM.");
+          db.userBalances[sendToUser] += amountToSend;
+          msg.reply("Sent. <@" + sendToUser + "> has received a tip of " + amountToSend / 100000 + " NIM.");
           saveDB();
         } catch (e) {}
       }
