@@ -86,7 +86,7 @@ async function main() {
         logger.debug("Parsed address, " + address);
         var amountToSend = 20000;
         try {
-          amountToSend = parseInt(msg.content.match(/\d*$/)[0], 10);
+          amountToSend = parseInt(msg.content.match(/ \d*$/)[0], 10);
         }
         if (amountToSend === 0) {
           msg.reply("You cannot send 0 NIM.");
