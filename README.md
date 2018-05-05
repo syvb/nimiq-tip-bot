@@ -3,6 +3,27 @@
 ## How to add to your server
 You can [install my hosted version](https://discordapp.com/oauth2/authorize?client_id=441329117946707978&scope=bot) of this software. However, only admins can add bots to servers. @free-nim-bot will **not** have admin rights, though. You can [try it on an example server](https://discord.gg/vCYkWJc), too.
 
+## Commands
+All commands are case-insensitive.
+
+### !tip *nimiq address*
+Sends NIM, on chain, to that address. Currently, all tips are 0.2 NIM.
+
+### !tip @*discord_username*
+Sends NIM to that user’s tip balance, off-chain. Currently, all tips are 0.2 NIM.
+
+### !balance
+Shows you your tip balance
+
+### !withdraw *nimiq address*
+Sends your entire tip balance to that address, on-chain.
+
+### !deposit
+Gives you instructions on how to deposit.
+
+You can send the commands by DMing @nim-tip-bot, or in any Discord server that has the bot on it.
+
+
 ## How to make a self-hosted installation
 1. Install the [Nimiq compiled binary](https://nimiq.com/#downloads), on your Ubuntu/Debian system.
 2. Clone this repo.
