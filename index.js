@@ -8,8 +8,6 @@ const DiscordAuth = require("./discordAuth.json");
 const Discord = require("discord.js");
 const fs = require("fs");
 
-var rateLimitedIDs = {};
-
 var db = JSON.parse(fs.readFileSync("./db.json", "utf8"));
 
 async function main() {
@@ -47,8 +45,7 @@ async function main() {
     logger.verbose("Consensus established");
     const bot = new Discord.Client();
     bot.on("ready", function (evt) {
-      console.log(42);
-      logger.info("Logged in to Discord as: " + bot.username + " - (" + bot.id + ")");
+      logger.info("Logged in to Discord.");
     });
     bot.on("message", async function (msg) {
       logger.silly("Got message, " + msg.content);
@@ -114,14 +111,9 @@ async function main() {
         } catch (e) {}
       }
     });
-    bot.on("error", function (a) {console.log("a" + a);})
     bot.login(DiscordAuth.token);
     logger.info("Discord bot configured.");
   });
   Nimiq.Log.instance.level = 4;
 }
 main();
-setInterval(function () {
-  logger.verbose("Reset rate-limted IDs");
-  rateLimitedIDs = {};
-}, 900000); // 14 minutes
