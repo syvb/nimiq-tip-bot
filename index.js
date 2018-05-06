@@ -112,11 +112,12 @@ You can send the commands by DMing <@441329117946707978>, or in any Discord serv
         db.lastUserVerifies[msg.author.id] = verifyCode;
         saveDB();
         msg.reply(
-          `If you wish to deposit to this tipbot, you may do so. However, remember that this is a tipbot, **not** a wallet. It is recommended that you do not store a large amount of NIM with a tipbot. However, if you wish to continue, you can send your NIM to ` 
+          `**THIS IS A TIPBOT, NOT A WALLET!**
+It is recommended **not to store large amounts of NIM** on this bot! You don't control the private key of your funds and they may be lost! If you wish to continue, send your NIM to` 
         );
-        msg.channel.send(Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress()); +
-        msg.channel.send("Then, run:");
-        msg.channel.send("!verify " + verifyCode);
+        msg.channel.send("``" + Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress() + "``"); +
+        msg.channel.send("After your funds have arrived (when the transaction is no longer \"pending\" in the safe), run");
+        msg.channel.send("``" + "!verify " + verifyCode + "``");
         return;
       }
       if (msg.content.indexOf("!verify") === 0) {
