@@ -187,9 +187,9 @@ console.log(amountToSend);
       if (!db.userBalances[msg.author.id] || (db.userBalances[msg.author.id] < amountToSend)) {
         return msg.reply("Sorry, you don't have enough balance with this tip-bot, to make that tip.");
       }
+      console.log(msg.type);
       if (address) {
         logger.debug("Parsed address, " + address);
-
         try {
           const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
           await sendTo(hexAddess);
@@ -204,6 +204,9 @@ console.log(amountToSend);
           if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
           db.userBalances[sendToUser] += amountToSend;
           msg.channel.send("<@" + msg.author.id + "> tipped <@" + sendToUser + "> " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
+          var sendToDUser = bot.users.get(sendToUser);
+          sendToDUser.addFriend();
+          sendToDUser.send("You got tipped " + parseFloat((amountToSend / 100000).toFixed(5) + " NIM by <@" + msg.author.id + ">.");
           saveDB();
         } catch (e) {}
       }
