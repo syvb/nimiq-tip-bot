@@ -49,6 +49,10 @@ async function main() {
       logger.info("Logged in to Discord.");
     });
     bot.on("message", async function (msg) {
+      if (db.blacklist.indexOf(msg.author.id) > -1) {
+        console.log("On blacklist, ", msg.author.id);
+        return;
+      }
       logger.silly("Got message, " + msg.content);
       var address = AddressFinder(msg.content);
       msg.content = msg.content.toLowerCase();
@@ -126,10 +130,7 @@ async function main() {
       if (msg.content.indexOf("!tip") !== 0) {
         return;
       }
-      if (db.blacklist[msg.author.id]) {
-        console.log("On blacklist, ", msg.author.id);
-        return;
-      }
+
 
         var amountToSend = 20000;
         try {
