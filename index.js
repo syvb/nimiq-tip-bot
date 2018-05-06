@@ -187,7 +187,7 @@ console.log(amountToSend);
       if (!db.userBalances[msg.author.id] || (db.userBalances[msg.author.id] < amountToSend)) {
         return msg.reply("Sorry, you don't have enough balance with this tip-bot, to make that tip.");
       }
-      console.log(msg.type);
+      console.log(msg.channel.type);
       if (address) {
         logger.debug("Parsed address, " + address);
         try {
@@ -203,10 +203,11 @@ console.log(amountToSend);
           db.userBalances[msg.author.id] -= amountToSend;
           if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
           db.userBalances[sendToUser] += amountToSend;
-          msg.channel.send("<@" + msg.author.id + "> tipped <@" + sendToUser + "> " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
           var sendToDUser = bot.users.get(sendToUser);
-          sendToDUser.addFriend();
-          sendToDUser.send("You got tipped " + parseFloat((amountToSend / 100000).toFixed(5) + " NIM by <@" + msg.author.id + ">.");
+          msg.channel.send("<@" + msg.author.id + "> tipped <@" + sendToDUser.username + "> " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
+          if (msg.channel.type === "dm") {          
+            sendToDUser.send("You got tipped " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM by " + bot.users.get(msg.author.id).username + ".");
+          }
           saveDB();
         } catch (e) {}
       }
