@@ -80,7 +80,7 @@ You can send the commands by DMing <@441329117946707978>, or in any Discord serv
       }
       if (msg.content.indexOf("!balance") === 0) {
         if (db.userBalances[msg.author.id]) {
-          return msg.reply("Your balance is " + db.userBalances[msg.author.id] / 100000 + " NIM.");
+          return msg.reply("Your balance is " + (db.userBalances[msg.author.id] / 100000).toFixed(5) + " NIM.");
         } else {
           return msg.reply("You have no balance.");
         }
@@ -156,7 +156,7 @@ You can send the commands by DMing <@441329117946707978>, or in any Discord serv
         //We don't need a transaction fee, because this will be this wallet's only transfer, ever.
         var transaction = userWallet.createTransaction(wallet.address, balance, 0, consensus.blockchain.head.height);
         await consensus.mempool.pushTransaction(transaction);
-        msg.reply("It worked! " + (balance / 100000) + " NIM has been credited to your account. **DO NOT** reuse this address. Instead, request a new one with !deposit, if you want to deposit more.");
+        msg.reply("It worked! " + (balance / 100000).toFixed(5) + " NIM has been credited to your account. **DO NOT** reuse this address. Instead, request a new one with !deposit, if you want to deposit more.");
         saveDB();
         return;
       }
@@ -195,7 +195,7 @@ console.log(amountToSend);
           await sendTo(hexAddess);
           db.userBalances[msg.author.id] -= amountToSend;
           saveDB();
-          msg.reply("You have sent " + (amountToSend / 100000) + " NIM to that address.");
+          msg.reply("You have sent " + (amountToSend / 100000).toFixed(5) + " NIM to that address.");
         } catch (e) {}
       } else {
         try {
@@ -203,7 +203,7 @@ console.log(amountToSend);
           db.userBalances[msg.author.id] -= amountToSend;
           if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
           db.userBalances[sendToUser] += amountToSend;
-          msg.reply("Sent. <@" + sendToUser + "> has received a tip of " + amountToSend / 100000 + " NIM.");
+          msg.reply("Sent. <@" + sendToUser + "> has received a tip of " + (amountToSend / 100000).toFixed(5) + " NIM.");
           saveDB();
         } catch (e) {}
       }
