@@ -59,7 +59,6 @@ async function main() {
       msg.content = msg.content.toLowerCase();
       if (msg.content.indexOf("!help") === 0) {
         return msg.reply(`Commands:
-All commands are case-insensitive.
 —
 !tip nimiq address
 Sends NIM, on chain, to that address. Currently, all tips are 0.2 NIM.
