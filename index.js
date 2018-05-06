@@ -25,6 +25,7 @@ async function main() {
     });
   }
   if (!db.keyPairs) db.keyPairs = {};
+  if (!db.lastUserVerifies) db.lastUserVerifies = {};
 
   Nimiq.GenesisConfig.main();
   const privateKey = Buffer.from(MnemonicPhrase.mnemonicToKey(require("./privateKey.js")), "hex");
@@ -87,6 +88,7 @@ async function main() {
           user: msg.author.id,
           used: false
         };
+        db.lastUserVerifies[msg.author.id] = verifyCode;
         saveDB();
         msg.reply(
           `If you wish to deposit to this tipbot, you may do so. However, remember that this is a tipbot, **not** a wallet. It is recommended that you do not store a large amount of NIM with a tipbot. However, if you wish to continue, you can send your NIM to ` 
@@ -100,7 +102,11 @@ async function main() {
         msg.content = msg.content.trim();
         var publicKey = msg.content.split("!verify")[1].trim();
         if (!db.keyPairs[publicKey]) {
-          return msg.reply("Sorry, it doesn't look like that address has been used.");
+          if (db.lastUserVerifies[msg.author.id]) {
+            publickKey = db.lastUserVerifies[msg.author.id];
+          } else {
+            return msg.reply("Sorry, it doesn't look like that !verify code exists. I also can't find any verifies in your history.");
+          }
         }
         var walletInfo = db.keyPairs[publicKey];
         if (walletInfo.user !== msg.author.id) {
@@ -120,6 +126,7 @@ async function main() {
         }
         db.userBalances[walletInfo.user] += balance;
         db.keyPairs[publicKey].used = true;
+        db.lastUserVerifies[msg.author.id] = null;
         //We don't need a transaction fee, because this will be this wallet's only transfer, ever.
         var transaction = userWallet.createTransaction(wallet.address, balance, 0, consensus.blockchain.head.height);
         await consensus.mempool.pushTransaction(transaction);
