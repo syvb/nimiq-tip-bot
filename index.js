@@ -57,6 +57,27 @@ async function main() {
       logger.silly("Got message, " + msg.content);
       var address = AddressFinder(msg.content);
       msg.content = msg.content.toLowerCase();
+      if (msg.content.indexOf("!help") === 0) {
+        return msg.reply(`Commands:
+All commands are case-insensitive.
+—
+!tip nimiq address
+Sends NIM, on chain, to that address. Currently, all tips are 0.2 NIM.
+—
+!tip @discord_username
+Sends NIM to that user’s tip balance, off-chain. Currently, all tips are 0.2 NIM.
+—
+!balance
+Shows you your tip balance
+—
+!withdraw nimiq address
+Sends your entire tip balance to that address, on-chain.
+—
+!deposit
+Gives you instructions on how to deposit.
+—
+You can send the commands by DMing <@441329117946707978>, or in any Discord server that has the bot on it.`);
+      }
       if (msg.content.indexOf("!balance") === 0) {
         if (db.userBalances[msg.author.id]) {
           return msg.reply("Your balance is " + db.userBalances[msg.author.id] / 100000 + " NIM.");
