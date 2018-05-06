@@ -103,7 +103,12 @@ async function main() {
         var publicKey = msg.content.split("!verify")[1].trim();
         if (!db.keyPairs[publicKey]) {
           if (db.lastUserVerifies[msg.author.id]) {
-            publickKey = db.lastUserVerifies[msg.author.id];
+            if (publicKey === "") {
+              publickKey = db.lastUserVerifies[msg.author.id];
+            } else {
+              msg.reply("Sorry, it doesn't look like that !verify code exists. Did you mean: ");
+              return msg.channel.send("!verify " + db.lastUserVerifies[msg.author.id]);
+            }
           } else {
             return msg.reply("Sorry, it doesn't look like that !verify code exists. I also can't find any verifies in your history.");
           }
