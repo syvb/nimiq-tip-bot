@@ -116,8 +116,9 @@ async function main() {
         }
         db.userBalances[walletInfo.user] += balance;
         db.keyPairs[publicKey].used = true;
-    var transaction = userWallet.createTransaction(wallet.address, balance - 141, 140, consensus.blockchain.head.height);
-    await consensus.mempool.pushTransaction(transaction);
+        //We don't need a transaction fee, because this will be this wallet's only transfer, ever.
+        var transaction = userWallet.createTransaction(wallet.address, balance, 0, consensus.blockchain.head.height);
+        await consensus.mempool.pushTransaction(transaction);
         msg.reply("It worked! " + (balance / 100000) + " NIM has been credited to your account. **DO NOT** reuse this address. Instead, request a new one with !deposit, if you want to deposit more.");
         saveDB();
         return;
