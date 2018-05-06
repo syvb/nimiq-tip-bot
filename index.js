@@ -196,7 +196,7 @@ console.log(amountToSend);
           await sendTo(hexAddess);
           db.userBalances[msg.author.id] -= amountToSend;
           saveDB();
-          msg.reply("You have sent " + (amountToSend / 100000).toFixed(5) + " NIM to that address.");
+          msg.reply("Tipped " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM to that address.");
         } catch (e) {}
       } else {
         try {
@@ -204,7 +204,7 @@ console.log(amountToSend);
           db.userBalances[msg.author.id] -= amountToSend;
           if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
           db.userBalances[sendToUser] += amountToSend;
-          msg.reply("Sent. <@" + sendToUser + "> has received a tip of " + (amountToSend / 100000).toFixed(5) + " NIM.");
+          msg.reply("Tipped <@" + sendToUser + "> " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
           saveDB();
         } catch (e) {}
       }
