@@ -60,8 +60,8 @@ async function main() {
       if (msg.content.indexOf("!help") === 0) {
         return msg.reply(`Commands:
 —
-!tip nimiq address
-Sends NIM, on chain, to that address. Currently, all tips are 0.2 NIM.
+!tip nimiq address [tip amount]
+Sends NIM, on chain, to that address. If you don't specify a tip amount, it defaults to 0.2 NIM.
 —
 !tip @discord_username [tip amount]
 Sends NIM to that user’s tip balance, off-chain. If you don't specify a tip amount, it defaults to 0.2 NIM.
