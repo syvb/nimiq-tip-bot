@@ -104,7 +104,7 @@ async function main() {
         if (!db.keyPairs[publicKey]) {
           if (db.lastUserVerifies[msg.author.id]) {
             if (publicKey === "") {
-              publickKey = db.lastUserVerifies[msg.author.id];
+              publicKey = db.lastUserVerifies[msg.author.id];
             } else {
               msg.reply("Sorry, it doesn't look like that !verify code exists. Did you mean: ");
               return msg.channel.send("!verify " + db.lastUserVerifies[msg.author.id]);
