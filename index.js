@@ -76,15 +76,20 @@ async function main() {
       if (msg.content.indexOf("!deposit") === 0) {
         var keyPair = Nimiq.KeyPair.generate();
         var walletAddress = Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress();
-        db.keyPairs[keyPair.publicKey.toHex()] = {
+        var verifyCode = (Date.now() - 1525605947934).toString(36) //Milliseconds since I wrote this line, in base36
+                           + Math.random().toString(36).split("0.")[1]; //A random number, in base36
+        db.keyPairs[verifyCode] = {
           privateKey: keyPair.privateKey.toHex(),
           user: msg.author.id,
           used: false
         };
         saveDB();
         msg.reply(
-          `If you wish to deposit to this tipbot, you may do so. However, remember that this is a tipbot, **not** a wallet. It is recommended that you do not store a large amount of NIM with a tipbot. \n` +
-          "Please send your NIM to " + Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress() + ". \n Then, run \"!verify " + keyPair.publicKey.toHex() + "\"");
+          `If you wish to deposit to this tipbot, you may do so. However, remember that this is a tipbot, **not** a wallet. It is recommended that you do not store a large amount of NIM with a tipbot. However, if you wish to continue, you can send your NIM to " 
+        );
+        msg.reply(Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress()); +
+        msg.reply("Then, run:");
+        msg.reply("!verify " + verifyCode);
         return;
       }
       if (msg.content.indexOf("!verify") === 0) {
