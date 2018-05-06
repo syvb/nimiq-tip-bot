@@ -87,9 +87,9 @@ async function main() {
         msg.reply(
           `If you wish to deposit to this tipbot, you may do so. However, remember that this is a tipbot, **not** a wallet. It is recommended that you do not store a large amount of NIM with a tipbot. However, if you wish to continue, you can send your NIM to ` 
         );
-        msg.reply(Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress()); +
-        msg.reply("Then, run:");
-        msg.reply("!verify " + verifyCode);
+        msg.channel.send(Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress()); +
+        msg.channel.send("Then, run:");
+        msg.channel.send("!verify " + verifyCode);
         return;
       }
       if (msg.content.indexOf("!verify") === 0) {
