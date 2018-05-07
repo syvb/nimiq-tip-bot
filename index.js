@@ -62,8 +62,7 @@ async function main() {
       var address = AddressFinder(msg.content);
       msg.content = msg.content.toLowerCase();
       if (msg.content.indexOf("!help") === 0) {
-        return msg.reply(`Need help? Contact <@384847091924729856>. Or, check out the #support channel in the example server - https://discord.gg/KFc8gK2.
-
+        return msg.reply(`
 Commands:
 —
 !tip nimiq address [tip amount]
@@ -81,7 +80,12 @@ Sends your entire tip balance to that address, on-chain.
 !deposit
 Gives you instructions on how to deposit.
 —
-You can send the commands by DMing <@441329117946707978>, or in any Discord server that has the bot on it.`);
+You can send the commands by DMing <@441329117946707978>, or in any Discord server that has the bot on it.
+
+This is a community run bot. It is not associated with the Nimiq Foundation, or the Nimiq Team.  If you have any feedback, or questions, direct it to <@384847091924729856>, or post it in the bot's Discord server (https://discord.gg/KFc8gK2).
+
+Need help? Contact <@384847091924729856>. Or, check out the #support channel in the example server - https://discord.gg/KFc8gK2.
+`);
       }
       if (msg.content.indexOf("!balance") === 0) {
         if (db.userBalances[msg.author.id]) {
