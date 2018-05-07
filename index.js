@@ -106,6 +106,10 @@ You can send the commands by DMing <@441329117946707978>, or in any Discord serv
         return;
       }
       if (msg.content.indexOf("!deposit") === 0) {
+        if ((msg.content.indexOf("!depositforce") !== 0) && (msg.channel.type !== "dm")) { 
+          return msg.reply("Deposits are not possible on a server for privacy and security reasons. To add funds to your account, please Direct Message me with !deposit.");
+        }
+        if (
         var keyPair = Nimiq.KeyPair.generate();
         var walletAddress = Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress();
         var verifyCode = (Date.now() - 1525605947934).toString(36) //Milliseconds since I wrote this line, in base36
