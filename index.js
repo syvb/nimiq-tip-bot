@@ -62,7 +62,9 @@ async function main() {
       var address = AddressFinder(msg.content);
       msg.content = msg.content.toLowerCase();
       if (msg.content.indexOf("!help") === 0) {
-        return msg.reply(`Commands:
+        return msg.reply(`Need help? Contact <@384847091924729856>. Or, check out the #support channel in the example server - https://discord.gg/KFc8gK2.
+
+Commands:
 —
 !tip nimiq address [tip amount]
 Sends NIM, on chain, to that address. If you don't specify a tip amount, it defaults to 0.2 NIM.
@@ -109,7 +111,6 @@ You can send the commands by DMing <@441329117946707978>, or in any Discord serv
         if ((msg.content.indexOf("!depositforce") !== 0) && (msg.channel.type !== "dm")) { 
           return msg.reply("Deposits are not possible on a server for privacy and security reasons. To add funds to your account, please Direct Message me with !deposit.");
         }
-        if (
         var keyPair = Nimiq.KeyPair.generate();
         var walletAddress = Nimiq.Address.fromHash(keyPair.publicKey.hash()).toUserFriendlyAddress();
         var verifyCode = (Date.now() - 1525605947934).toString(36) //Milliseconds since I wrote this line, in base36
@@ -223,7 +224,7 @@ console.log(amountToSend);
           if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
           db.userBalances[sendToUser] += amountToSend;
           var sendToDUser = bot.users.get(sendToUser);
-          msg.channel.send("<@" + msg.author.id + "> tipped <@" + sendToDUser.username + "> " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
+          msg.channel.send("<@" + msg.author.id + "> tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
           if (msg.channel.type === "dm") {          
             sendToDUser.send("You got tipped " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM by " + bot.users.get(msg.author.id).username + ".");
           }
