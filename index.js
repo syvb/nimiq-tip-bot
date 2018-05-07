@@ -89,7 +89,7 @@ Need help? Contact <@384847091924729856>. Or, check out the #support channel in 
       }
       if (msg.content.indexOf("!balance") === 0) {
         if (db.userBalances[msg.author.id]) {
-          return msg.reply("Your balance is " + (db.userBalances[msg.author.id] / 100000).toFixed(5) + " NIM.");
+          return msg.reply("Your balance is " + parseFloat((db.userBalances[msg.author.id] / 100000).toFixed(5), 10) + " NIM.");
         } else {
           return msg.reply("You have no balance.");
         }
@@ -175,7 +175,7 @@ It is recommended **not to store large amounts of NIM** on this bot! You don't c
         //We don't need a transaction fee, because this will be this wallet's only transfer, ever.
         var transaction = userWallet.createTransaction(wallet.address, balance, 0, consensus.blockchain.head.height);
         await consensus.mempool.pushTransaction(transaction);
-        msg.reply("It worked! " + (balance / 100000).toFixed(5) + " NIM has been credited to your account. **DO NOT** reuse this address. Instead, request a new one with !deposit, if you want to deposit more.");
+        msg.reply("It worked! " + parseFloat((balance / 100000).toFixed(5), 10) + " NIM has been credited to your account. **DO NOT** reuse this address. Instead, request a new one with !deposit, if you want to deposit more.");
         saveDB();
         return;
       }
