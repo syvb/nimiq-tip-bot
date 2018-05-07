@@ -210,7 +210,7 @@ console.log(amountToSend);
       } else {
         try {
           var sendToUser = msg.content.match(/<@!?(\d*)>/)[1];
-          if ((sendToUser === "441329117946707978") || (sendToUser === "1") {
+          if ((sendToUser === "441329117946707978") || (sendToUser === "1")) {
             db.txFeeBalance += amountToSend;
             saveDB();
             msg.reply("Adding that to the transaction fee paying pool. Because you tipped me, I'll use your funds to pay for transaction fees.");
