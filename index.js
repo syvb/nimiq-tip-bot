@@ -41,7 +41,8 @@ async function main() {
   const consensus = await Nimiq.Consensus.light();
   consensus.network.connect();
   async function sendTo(address, amount) {
-    txFeeBalance -= 140;
+    db.txFeeBalance -= 140;
+    saveDB();
     logger.debug("Sent NIM to " + address)
     var transaction = wallet.createTransaction(address, amount ? amount : 20000, 140, consensus.blockchain.head.height);
     await consensus.mempool.pushTransaction(transaction);
@@ -91,7 +92,7 @@ You can send the commands by DMing <@441329117946707978>, or in any Discord serv
       if (msg.content.indexOf("!withdraw") === 0) {
         if (address) {
           logger.debug("Parsed address, " + address);
-          if (txFeeBalance < 140) {
+          if (db.txFeeBalance < 140) {
             return msg.reply("Sorry, something very bad happened. I can't afford the transaction fee. Please try again, later.");
           }
           try {
@@ -197,7 +198,7 @@ console.log(amountToSend);
       if (address) {
         logger.debug("Parsed address, " + address);
         try {
-          if (txFeeBalance < 140) {
+          if (db.txFeeBalance < 140) {
             return msg.reply("Sorry, something very bad happened. I can't afford the transaction fee. Please try again, later.");
           }
           const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
@@ -210,8 +211,9 @@ console.log(amountToSend);
         try {
           var sendToUser = msg.content.match(/<@!?(\d*)>/)[1];
           if ((sendToUser === "441329117946707978") || (sendToUser === "1") {
-            txFeeBalance += amountToSend;
-            msg.reply("Adding that to the transaction fee paying pool...");
+            db.txFeeBalance += amountToSend;
+            saveDB();
+            msg.reply("Adding that to the transaction fee paying pool. Because you tipped me, I'll use your funds to pay for transaction fees.");
           }
           db.userBalances[msg.author.id] -= amountToSend;
           if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
