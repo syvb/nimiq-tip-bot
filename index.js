@@ -50,8 +50,10 @@ async function main() {
   consensus.on("established", async () => {
     logger.verbose("Consensus established");
     const bot = new Discord.Client();
+    var historyChannel;
     bot.on("ready", function (evt) {
       logger.info("Logged in to Discord.");
+      historyChannel = bot.channels.get("443512282664927233");
     });
     bot.on("message", async function (msg) {
       if (db.blacklist.indexOf(msg.author.id) > -1) {
@@ -219,6 +221,7 @@ console.log(amountToSend);
           db.userBalances[msg.author.id] -= amountToSend;
           saveDB();
           msg.channel.send("<@" + msg.author.id + "> tipped " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM to that address.");
+          historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
         } catch (e) {}
       } else {
         try {
@@ -235,6 +238,8 @@ console.log(amountToSend);
           msg.channel.send("<@" + msg.author.id + "> tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
           if (msg.channel.type === "dm") {          
             sendToDUser.send("You got tipped " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM by " + bot.users.get(msg.author.id).username + ".");
+          } else {
+            historyChannel.send("@" + msg.author.username + " tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5)) + "NIM.");
           }
           saveDB();
         } catch (e) {}
