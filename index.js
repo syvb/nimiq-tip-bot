@@ -83,9 +83,7 @@ Sends your entire tip balance to that address, on-chain.
 Gives you instructions on how to deposit.
 —
 You can send the commands by DMing <@441329117946707978>, or in any Discord server that has the bot on it.
-
 This is a community run bot. It is not associated with the Nimiq Foundation, or the Nimiq Team.  If you have any feedback, or questions, direct it to <@384847091924729856>, or post it in the bot's Discord server (<https://discord.gg/KFc8gK2>).
-
 Need help? Contact <@384847091924729856>. Or, check out the #support channel in the example server - <https://discord.gg/KFc8gK2>.
 `);
       }
@@ -221,7 +219,7 @@ console.log(amountToSend);
             return msg.reply("Sorry, something very bad happened. I can't afford the transaction fee. Please try again, later.");
           }
           const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
-          await sendTo(hexAddess);
+          await sendTo(hexAddess, amountToSend);
           db.userBalances[msg.author.id] -= amountToSend;
           saveDB();
           msg.channel.send("<@" + msg.author.id + "> tipped " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM to that address.");
@@ -248,7 +246,7 @@ console.log(amountToSend);
             historyChannel.send("@" + msg.author.username + " tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM.");
           }
           saveDB();
-        } catch (e) {}
+        } catch (e) {console.log("werid", e)}
       }
     });
     bot.on("error", function (a) {logger.error("Discord error, ", a.toString());});
