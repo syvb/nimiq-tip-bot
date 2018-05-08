@@ -245,7 +245,7 @@ console.log(amountToSend);
           if (msg.channel.type === "dm") {          
             sendToDUser.send("You got tipped " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM by " + bot.users.get(msg.author.id).username + ".");
           } else {
-            historyChannel.send("@" + msg.author.username + " tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5)) + "NIM.");
+            historyChannel.send("@" + msg.author.username + " tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM.");
           }
           saveDB();
         } catch (e) {}
