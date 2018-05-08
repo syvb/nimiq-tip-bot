@@ -106,7 +106,7 @@ Need help? Contact <@384847091924729856>. Or, check out the #support channel in 
           }
           try {
             const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
-            await sendTo(hexAddess, db.userBalances[msg.author.id]);
+            await sendTo(hexAddess, Math.floor(db.userBalances[msg.author.id]));
             db.userBalances[msg.author.id] = 0;
             saveDB();
             msg.reply("You have sent your balance to that address.");
@@ -203,6 +203,7 @@ console.log(amountToSend);
           msg.reply("You cannot send 0 NIM.");
           return;
         }
+      amountToSend = Math.floor(amountToSend);
       if (!db.userBalances[msg.author.id] || (db.userBalances[msg.author.id] < amountToSend)) {
         return msg.reply("Sorry, you don't have enough balance with this tip-bot, to make that tip.");
       }
