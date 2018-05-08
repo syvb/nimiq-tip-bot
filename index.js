@@ -199,11 +199,11 @@ console.log(amountToSend);
         } else {
           amountToSend = parseFloat(amountToSend, 10) * 100000;
         }
+        amountToSend = Math.floor(amountToSend);
         if (amountToSend === 0) {
           msg.reply("You cannot send 0 NIM.");
           return;
         }
-      amountToSend = Math.floor(amountToSend);
       if (!db.userBalances[msg.author.id] || (db.userBalances[msg.author.id] < amountToSend)) {
         return msg.reply("Sorry, you don't have enough balance with this tip-bot, to make that tip.");
       }
