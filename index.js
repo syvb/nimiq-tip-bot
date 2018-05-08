@@ -109,9 +109,13 @@ Need help? Contact <@384847091924729856>. Or, check out the #support channel in 
           try {
             const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
             await sendTo(hexAddess, Math.floor(db.userBalances[msg.author.id]));
+            var sentAmount = Math.floor(db.userBalances[msg.author.id]);
             db.userBalances[msg.author.id] = 0;
             saveDB();
             msg.reply("You have sent your balance to that address.");
+            if (msg.channel.type !== "dm") {  
+              historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + (sentAmount * 100000) + " NIM.");
+            }
           } catch (e) {console.log(e);}
         }
         return;
@@ -221,7 +225,9 @@ console.log(amountToSend);
           db.userBalances[msg.author.id] -= amountToSend;
           saveDB();
           msg.channel.send("<@" + msg.author.id + "> tipped " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM to that address.");
-          historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
+          if (msg.channel.type !== "dm") {  
+            historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
+          }
         } catch (e) {}
       } else {
         try {
