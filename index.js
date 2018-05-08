@@ -239,13 +239,15 @@ console.log(amountToSend);
           if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
           db.userBalances[sendToUser] += amountToSend;
           var sendToDUser = bot.users.get(sendToUser);
+          saveDB();
           msg.channel.send("<@" + msg.author.id + "> tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
           if (msg.channel.type === "dm") {          
             sendToDUser.send("You got tipped " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM by " + bot.users.get(msg.author.id).username + ".");
           } else {
-            historyChannel.send("@" + msg.author.username + " tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM.");
+            setTimeout(function () {
+              historyChannel.send("@" + msg.author.username + " tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM.");
+            }, 7500);
           }
-          saveDB();
         } catch (e) {console.log("werid", e)}
       }
     });
