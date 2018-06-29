@@ -1,4 +1,4 @@
-﻿const logger = require("winston");
+const logger = require("winston");
 logger.info("Starting...");
 const Nimiq = require("/usr/share/nimiq/app/lib/node.js");
 const Buffer = require("buffer").Buffer;
@@ -255,7 +255,7 @@ console.log(amountToSend);
         } catch (e) {console.log("werid", e)}
       }
     });
-    bot.on("error", function (a) {logger.error("Discord error, ", a.toString());});
+    bot.on("error", function (a) {logger.error("Discord error, ", JSON.stringify(a));});
     bot.login(DiscordAuth.token);
     logger.info("Discord bot configured.");
   });
