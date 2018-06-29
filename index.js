@@ -115,14 +115,14 @@ Need help? Contact <@384847091924729856>. Or, check out the #support channel in 
             saveDB();
             msg.reply("You have sent your balance to that address.");
             if (msg.channel.type !== "dm") {  
-              historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + (sentAmount * 1) + " NIM.");
+              historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + (sentAmount * 100000) + " NIM.");
             }
           } catch (e) {console.log(e);}
         }
         return;
       }
       if (msg.content.indexOf("!deposit") === 0) {
-//return msg.reply("Depositing is currently disabled.");
+        //return msg.reply("Depositing is currently disabled.");
         if ((msg.content.indexOf("!depositforce") !== 0) && (msg.channel.type !== "dm")) { 
           return msg.reply("Deposits are not possible on a server for privacy and security reasons. To add funds to your account, please Direct Message me with !deposit.");
         }
@@ -177,6 +177,7 @@ It is recommended **not to store large amounts of NIM** on this bot! You don't c
         if (balance === 0) {
           return msg.reply("No NIM was sent to that address.");
         }
+        if (!db.userBalances[walletInfo.user]) db.userBalances[walletInfo.user] = 0;
         db.userBalances[walletInfo.user] += balance;
         db.keyPairs[publicKey].used = true;
         db.lastUserVerifies[msg.author.id] = null;
