@@ -115,7 +115,11 @@ Need help? Contact <@384847091924729856>. Or, check out the #support channel in 
             saveDB();
             msg.reply("You have sent your balance to that address.");
             if (msg.channel.type !== "dm") {  
+<<<<<<< HEAD
+              historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + (sentAmount * 1) + " NIM.");
+=======
               historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + (sentAmount * 100000) + " NIM.");
+>>>>>>> eff1dde2b39230f82d48ee622f351dd9466b2a7e
             }
           } catch (e) {console.log(e);}
         }
@@ -256,7 +260,7 @@ console.log(amountToSend);
         } catch (e) {console.log("werid", e)}
       }
     });
-    bot.on("error", function (a) {logger.error("Discord error, ", JSON.stringify(a));});
+    bot.on("error", function (a) {logger.error("Discord error... ");});
     bot.login(DiscordAuth.token);
     logger.info("Discord bot configured.");
   });
