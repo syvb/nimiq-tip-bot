@@ -173,6 +173,7 @@ It is recommended **not to store large amounts of NIM** on this bot! You don't c
         if (balance === 0) {
           return msg.reply("No NIM was sent to that address.");
         }
+        if (!db.userBalances[walletInfo.user]) db.userBalances[walletInfo.user] = 0;
         db.userBalances[walletInfo.user] += balance;
         db.keyPairs[publicKey].used = true;
         db.lastUserVerifies[msg.author.id] = null;
