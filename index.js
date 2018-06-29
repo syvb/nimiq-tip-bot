@@ -66,6 +66,10 @@ async function main() {
       logger.silly("Got message, " + msg.content);
       var address = AddressFinder(msg.content);
       msg.content = msg.content.toLowerCase();
+      if (msg.content.indexOf("!github") === 0) {
+        return msg.reply(`Visit our GitHub page to contribute: https://github.com/Smittyvb/nimiq-tip-bot
+`);
+      }
       if (msg.content.indexOf("!help") === 0) {
         return msg.reply(`
 Commands:
