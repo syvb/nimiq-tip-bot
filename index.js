@@ -92,8 +92,7 @@ Gives you instructions on how to deposit.
 !github
 Gives you a link to the github.
 _
-
-Youcan send the commands by DMing <@441329117946707978>, or in any Discord server that has the bot on it.
+You can send the commands by DMing <@441329117946707978>, or in any Discord server that has the bot on it.
 This is a community run bot. It is not associated with the Nimiq Foundation, or the Nimiq Team.  If you have any feedback, or questions, direct it to <@384847091924729856>, or post it in the bot's Discord server (<https://discord.gg/KFc8gK2>).
 Need help? Contact <@384847091924729856>. Or, check out the #support channel in the example server - <https://discord.gg/KFc8gK2>.
 `);
@@ -108,6 +107,10 @@ Need help? Contact <@384847091924729856>. Or, check out the #support channel in 
       }
       if (msg.content.indexOf("!txfeeinfo") === 0) {
         return msg.reply("I have enough NIM to pay for " + Math.floor(db.txFeeBalance / 140) + " transactions.");
+      }
+      if (msg.content.indexOf("!savedb") === 0) {
+        saveDB();
+        return msg.reply("Saved the database!");
       }
       if (msg.content.indexOf("!withdraw") === 0) {
         if (address) {
