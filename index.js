@@ -105,6 +105,10 @@ Need help? Contact <@384847091924729856>. Or, check out the #support channel in 
       if (msg.content.indexOf("!txfeeinfo") === 0) {
         return msg.reply("I have enough NIM to pay for " + Math.floor(db.txFeeBalance / 140) + " transactions.");
       }
+      if (msg.content.indexOf("!savedb") === 0) {
+        saveDB();
+        return msg.reply("Saved the database!");
+      }
       if (msg.content.indexOf("!withdraw") === 0) {
         if (address) {
           logger.debug("Parsed address, " + address);
