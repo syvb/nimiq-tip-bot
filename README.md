@@ -21,6 +21,9 @@ Sends your entire tip balance to that address, on-chain.
 ### !deposit
 Gives you instructions on how to deposit.
 
+### !github
+Gives you a link to the github.
+
 You can send the commands by DMing @nim-tip-bot, or in any Discord server that has the bot on it.
 
 
