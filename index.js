@@ -18,8 +18,12 @@ async function main() {
   logger.level = "debug";
   logger.verbose("Logging system ready.");
 
+  var savingDB = false;
   function saveDB(cb) {
+    if (savingDB) return;
+    savingDB = true;
     fs.writeFile("db.json", JSON.stringify(db), function (err) {
+      savingDB = false;
       if (err) throw err;
       if (cb) cb();
     });
