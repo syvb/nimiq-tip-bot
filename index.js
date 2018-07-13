@@ -209,6 +209,7 @@ It is recommended **not to store large amounts of NIM** on this bot! You don't c
 
 
         var amountToSend = 20000;
+        if (msg.content.split(".").length > 1) return msg.reply("I don't understand that number.");
         try {
           amountToSend = msg.content.match(/(\d|\.)*$/)[0].trim();
         }
