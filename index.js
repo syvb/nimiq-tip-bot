@@ -109,6 +109,45 @@ Need help? Contact <@384847091924729856>. Or, check out the #support channel in 
         }
         return;
       }
+      if (msg.content.indexOf("!rain") === 0) {
+        // Splits NIM across 10 random users in guild
+        if (msg.guild.members.length < 10) {
+          return msg.reply("Sorry, this server doesn't have enough users, for this command.");
+        }
+        var amountToSend = null;
+        if (msg.content.split(".").length > 2) return msg.reply("I don't understand that number. Make sure you choose an amount of NIM to rain.");
+        try {
+          amountToSend = msg.content.match(/(\d|\.)*$/)[0].trim();
+        }
+        catch (e) {}
+        var dots = msg.content.match(/\./);
+console.log(amountToSend);
+        if (dots && (dots.length > 2)) {
+          return msg.reply("I don't understand that number. Make sure you choose an amount of NIM to rain.");
+        }
+        if (amountToSend === "") {
+          return msg.reply("I don't understand that number. Make sure you choose an amount of NIM to rain.");
+        } else {
+          amountToSend = parseFloat(amountToSend, 10) * 100000;
+        }
+        amountToSend = Math.floor(amountToSend);
+        if (amountToSend === null) {
+          return msg.reply("I don't understand that number. Make sure you choose an amount of NIM to rain.");
+        }
+        db.userBalances[msg.author.id] -= amountToSend;
+        var nimtoshiPerPerson = amountToSend / 10; //TODO: what to do with rounded extra? right now we burn
+        nimtoshiPerPerson = Math.floor(nimtoshiPerPerson);
+        var rained = msg.guild.members.random(10);
+        var text = "Rained " + (nimtoshiPerPerson / 100000) + " NIM to";
+        rained.forEach(function (person) {
+          text += " <@" + person.id + ">";
+          if (!db.userBalances[person.id]) db.userBalances[person.id] = 0;
+          db.userBalances[person.id] += nimtoshiPerPerson;
+        });
+        text += ".";
+        saveDB();
+        return msg.reply(text);
+      }
       if (msg.content.indexOf("!txfeeinfo") === 0) {
         return msg.reply("I have enough NIM to pay for " + Math.floor(db.txFeeBalance / 140) + " transactions.");
       }
