@@ -109,7 +109,7 @@ Need help? Contact <@384847091924729856>. Or, check out the #support channel in 
         }
         return;
       }
-      if (msg.content.indexOf("!rain") === 0) {
+     /* if (msg.content.indexOf("!rain") === 0) {
         // Splits NIM across 10 random users in guild
         if (msg.guild.members.length < 10) {
           return msg.reply("Sorry, this server doesn't have enough users, for this command.");
@@ -147,7 +147,7 @@ console.log(amountToSend);
         text += ".";
         saveDB();
         return msg.reply(text);
-      }
+      }*/
       if (msg.content.indexOf("!txfeeinfo") === 0) {
         return msg.reply("I have enough NIM to pay for " + Math.floor(db.txFeeBalance / 140) + " transactions.");
       }
