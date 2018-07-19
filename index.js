@@ -163,6 +163,7 @@ console.log(amountToSend);
           }
           try {
             const hexAddess = Nimiq.Address.fromUserFriendlyAddress(address.toUpperCase());
+            if (!db.userBalances[msg.author.id]) return msg.reply("Sorry, you don't have any NIM to withdraw.");
             await sendTo(hexAddess, Math.floor(db.userBalances[msg.author.id]));
             var sentAmount = Math.floor(db.userBalances[msg.author.id]);
             db.userBalances[msg.author.id] = 0;
