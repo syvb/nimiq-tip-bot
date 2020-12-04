@@ -1,12 +1,14 @@
 const logger = require("winston");
 logger.info("Starting...");
-const Nimiq = require("/usr/share/nimiq/app/lib/node.js");
+const Nimiq = require("../faucet/nimiq-faucet/server/nimiq/lib/node.js");
+//const Nimiq = require("@nimiq/core");
 const Buffer = require("buffer").Buffer;
 const MnemonicPhrase = require("./phrases.js");
 const AddressFinder = require("./getAddress.js");
 const DiscordAuth = require("./discordAuth.json");
 const Discord = require("discord.js");
 const fs = require("fs");
+const fetch = require("node-fetch");
 
 var db = JSON.parse(fs.readFileSync("./db.json", "utf8"));
 
@@ -42,14 +44,14 @@ async function main() {
 
   logger.verbose("Loaded private key.");
 
-  const consensus = await Nimiq.Consensus.light();
+  const consensus = await Nimiq.Consensus.nano();
   consensus.network.connect();
   async function sendTo(address, amount) {
     db.txFeeBalance -= 140;
     saveDB();
     logger.debug("Sent NIM to " + address)
     var transaction = wallet.createTransaction(address, amount ? amount : 20000, 140, consensus.blockchain.head.height);
-    await consensus.mempool.pushTransaction(transaction);
+    await consensus.relayTransaction(transaction);
   }
   var ready = false;
   consensus.on("established", async () => {
@@ -75,7 +77,7 @@ async function main() {
 `);
       }
       if (msg.content.indexOf("!help") === 0) {
-        return msg.reply(`
+        return msg.author.send(`
 Commands:
 —
 !tip nimiq address [tip amount]
@@ -170,7 +172,7 @@ console.log(amountToSend);
             saveDB();
             msg.reply("You have sent your balance to that address.");
             if (msg.channel.type !== "dm") {
-              historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + (sentAmount * 100000) + " NIM.");
+              historyChannel.send("@" + msg.author.username + " tipped " + address.toUpperCase() + " " + (sentAmount / 100000) + " NIM.");
             }
           } catch (e) {console.log(e);}
         }
@@ -227,7 +229,10 @@ It is recommended **not to store large amounts of NIM** on this bot! You don't c
         var userKeyPair = Nimiq.KeyPair.derive(userKey);
         var userWallet = new Nimiq.Wallet(userKeyPair);
 //console.log(Nimiq.Address.fromHash(userKeyPair.publicKey).toUserFriendlyAddress())
-        var balance = (await consensus.blockchain.accounts.get(userWallet.address)).balance;
+        //var balance = (await consensus.blockchain.accounts.get(userWallet.address)).balance;
+        var balance = await fetch("https://api.nimiqx.com/account/" + userWallet.address.toUserFriendlyAddress() + "?api_key=f48e9bf56795f5155288b48c5599c214");
+        balance = await balance.json();
+        balance = balance.balance;
         console.log(balance + "!");
         if (balance === 0) {
           return msg.reply("No NIM was sent to that address.");
