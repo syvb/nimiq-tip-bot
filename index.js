@@ -56,7 +56,7 @@ async function main() {
   var ready = false;
   consensus.on("established", async () => {
     logger.verbose("Consensus established");
-    const bot = new Discord.Client({ disableMentions: "everyone" });
+    const bot = new Discord.Client({ partials: ["CHANNEL"], disableMentions: "everyone", intents: ["GUILDS", "GUILD_WEBHOOKS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES", "GUILD_MESSAGE_TYPING", "DIRECT_MESSAGE_TYPING", 1 << 15, 1 << 12, 1 << 9] });
     var historyChannel;
     bot.on("ready", function (evt) {
       logger.info("Logged in to Discord.");
