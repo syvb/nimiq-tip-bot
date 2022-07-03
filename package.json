@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "discord.io": "github:woor/discord.io#gateway_v6",
-    "discord.js": "^11.6.4",
+    "@nimiq/core": "^1.5.7",
+    "discord.io": "2.5.3",
+    "discord.js": "^13.8.1",
     "node-fetch": "^2.6.1",
     "winston": "^2.4.5"
   },

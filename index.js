@@ -1,7 +1,7 @@
 const logger = require("winston");
 logger.info("Starting...");
-const Nimiq = require("../faucet/nimiq-faucet/server/nimiq/lib/node.js");
-//const Nimiq = require("@nimiq/core");
+//const Nimiq = require("../faucet/nimiq-faucet/server/nimiq/lib/node.js");
+const Nimiq = require("@nimiq/core");
 const Buffer = require("buffer").Buffer;
 const MnemonicPhrase = require("./phrases.js");
 const AddressFinder = require("./getAddress.js");
@@ -56,11 +56,11 @@ async function main() {
   var ready = false;
   consensus.on("established", async () => {
     logger.verbose("Consensus established");
-    const bot = new Discord.Client();
+    const bot = new Discord.Client({ disableMentions: "everyone" });
     var historyChannel;
     bot.on("ready", function (evt) {
       logger.info("Logged in to Discord.");
-      historyChannel = bot.channels.get("443512282664927233");
+      historyChannel = bot.channels.cache.get("443512282664927233");
     });
     if (ready) return;
     ready = true;
@@ -304,11 +304,11 @@ console.log(amountToSend);
           db.userBalances[msg.author.id] -= amountToSend;
           if (!db.userBalances[sendToUser]) db.userBalances[sendToUser] = 0;
           db.userBalances[sendToUser] += amountToSend;
-          var sendToDUser = bot.users.get(sendToUser);
+          var sendToDUser = bot.users.cache.get(sendToUser);
           saveDB();
           msg.channel.send("<@" + msg.author.id + "> tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5), 10) + " NIM.");
           if (msg.channel.type === "dm") {          
-            sendToDUser.send("You got tipped " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM by " + bot.users.get(msg.author.id).username + ".");
+            sendToDUser.send("You got tipped " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM by " + bot.users.cache.get(msg.author.id).username + ".");
           } else {
             setTimeout(function () {
               historyChannel.send("@" + msg.author.username + " tipped @" + sendToDUser.username + " " + parseFloat((amountToSend / 100000).toFixed(5)) + " NIM.");
