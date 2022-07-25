@@ -180,7 +180,7 @@ console.log(amountToSend);
       }
       if (msg.content.indexOf("!deposit") === 0) {
         //return msg.reply("Depositing is currently disabled.");
-        if ((msg.content.indexOf("!depositforce") !== 0) && (msg.channel.type !== "dm")) { 
+        if ((msg.content.indexOf("!depositforce") !== 0) && (msg.channel.type.toLowerCase() !== "dm")) {
           return msg.reply("Deposits are not possible on a server for privacy and security reasons. To add funds to your account, please Direct Message me with !deposit.");
         }
         var keyPair = Nimiq.KeyPair.generate();
