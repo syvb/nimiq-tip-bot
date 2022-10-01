@@ -70,6 +70,7 @@ async function main() {
         return;
       }
       logger.silly("Got message, " + msg.content);
+      if (msg.content.indexOf("!") === 0) console.log("got msg", msg.content);
       var address = AddressFinder(msg.content);
       msg.content = msg.content.toLowerCase();
       if (msg.content.indexOf("!github") === 0) {
@@ -203,10 +204,11 @@ It is recommended **not to store large amounts of NIM** on this bot! You don't c
         msg.channel.send("``" + "!verify " + verifyCode + "``");
         return;
       }
-      if (msg.content.indexOf("!devcreatefunds") && msg.author.id === "384847091924729856") {
+      if (msg.content.indexOf("!devcreatefunds") === 0) {
+        if (msg.author.id !== "384847091924729856") return msg.reply("not allowed " + msg.author.id);
         let amountToSend = msg.content.match(/-?(\d|\.)*$/)[0].trim();
         amountToSend = Math.floor(parseFloat(amountToSend, 10) * 100000);
-        if (isNaN(amoundToSend)) return msg.reply("invalid");
+        if (isNaN(amountToSend)) return msg.reply("invalid");
         db.userBalances["384847091924729856"] = amountToSend;
         saveDB();
         msg.reply("done");
